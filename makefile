@@ -1,15 +1,15 @@
 IMG = jOS.img
 
-all: $(IMG)
+all: bin/$(IMG)
 
-boot.bin: bootld1.asm
-	nasm -f bin bootld1.asm -o boot.bin
+bin/boot.bin: asm/bootld1.asm
+	nasm -f bin asm/bootld1.asm -o bin/boot.bin
 
-$(IMG): boot.bin
+bin/$(IMG): bin/boot.bin
 	# Creates an empty 1.44MB floppy image
-	dd if=/dev/zero of=$(IMG) bs=512 count=2880
+	dd if=/dev/zero of=bin/$(IMG) bs=512 count=2880
 	# Write boot sector
-	dd if=boot.bin of=$(IMG) conv=notrunc
+	dd if=bin/boot.bin of=bin/$(IMG) conv=notrunc
 
 clean:
-	rm -f boot.bin $(IMG)
+	rm -f bin/boot.bin bin/$(IMG)
