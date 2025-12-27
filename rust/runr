@@ -1,0 +1,8 @@
+#!/usr/sbin/fish
+
+rm boot.bin
+cargo build
+llvm-objcopy.exe -O binary target/i386-unknown-none/debug/jos boot.bin
+truncate -s 510 boot.bin
+printf "\x55\xAA" >> boot.bin
+qemu-system-i386 -drive format=raw,file=boot.bin
