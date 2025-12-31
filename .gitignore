@@ -1,2 +1,6 @@
-rust/target
-boot.bin
+# Build Folders
+bin
+target
+
+# Extra Rust Files
+Cargo.lock

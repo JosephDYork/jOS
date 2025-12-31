@@ -1,0 +1,17 @@
+#!/usr/sbin/fish
+
+# Cleanup old binaries
+rm bin/boot.bin
+rm bin/linkerout.bin
+
+cargo build --release
+echo "========== Unlinked Elf Information =========="
+stat target/i386-unknown-none/release/jos
+echo "========== Linked Elf Information =========="
+llvm-objcopy -O binary target/i386-unknown-none/release/jos bin/boot.bin
+cp bin/boot.bin bin/linkerout.bin
+stat bin/linkerout.bin
+truncate -s 510 bin/boot.bin
+printf "\x55\xAA" >> bin/boot.bin
+echo "========== Completed Build and Drive =========="
+qemu-system-i386 -drive format=raw,file=bin/boot.bin

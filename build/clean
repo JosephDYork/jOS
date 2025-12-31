@@ -1,0 +1,8 @@
+#!/usr/sbin/fish
+
+# Cleanup binaries
+rm bin/boot.bin
+rm bin/linkerout.bin
+rm -rf target
+
+echo "========== Cleaned old Binaries =========="
