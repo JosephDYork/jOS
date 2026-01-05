@@ -1,17 +1,49 @@
 #!/usr/sbin/fish
 
 # Cleanup old binaries
-rm bin/boot.bin
-rm bin/linkerout.bin
+rm bin/stage0.bin
+rm bin/stage0linkerout.bin
+rm bin/stage1.bin
+rm bin/stage1linkerout.bin
 
+# Build the stage0 bootloader
+echo "============= Cargo Stage0 Information =============="
+cd ./stage0
 cargo build --release
-echo "========== Unlinked Elf Information =========="
+echo "========== Unlinked Stage0 Elf Information =========="
 stat target/i386-unknown-none/release/jos
-echo "========== Linked Elf Information =========="
-llvm-objcopy -O binary target/i386-unknown-none/release/jos bin/boot.bin
-cp bin/boot.bin bin/linkerout.bin
-stat bin/linkerout.bin
-truncate -s 510 bin/boot.bin
-printf "\x55\xAA" >> bin/boot.bin
+echo "========== Linked Stage0 Elf Information =========="
+llvm-objcopy -O binary target/i386-unknown-none/release/jos ../bin/stage0linkerout.bin
+
+cd ..
+cp bin/stage0linkerout.bin bin/stage0.bin
+stat bin/stage0linkerout.bin
+
+# Build the stage1 bootloader
+echo "============= Cargo Stage1 Information =============="
+cd ./stage1
+cargo build --release
+echo "========== Unlinked Stage1 Elf Information =========="
+stat target/i386-unknown-none/release/jos
+echo "========== Linked Stage1 Elf Information =========="
+llvm-objcopy -O binary target/i386-unknown-none/release/jos ../bin/stage1linkerout.bin
+
+cd ..
+cp bin/stage1linkerout.bin bin/stage1.bin
+stat bin/stage1linkerout.bin
+
+# Ensure Stage0 is a proper boot sector
+truncate -s 510 bin/stage0.bin
+printf "\x55\xAA" >> bin/stage0.bin
+
+# Ensure Stage1 is 1 sector
+truncate -s 510 bin/stage1.bin
+printf "\x55\xAA" >> bin/stage1.bin
+
+echo "========== Final Bootloader Bin Information =========="
+# Join together our two stages
+cat bin/stage0.bin bin/stage1.bin > bin/bootloader.bin
+stat bin/bootloader.bin
+
 echo "========== Completed Build and Drive =========="
-qemu-system-i386 -drive format=raw,file=bin/boot.bin
+qemu-system-i386 -fda bin/bootloader.bin

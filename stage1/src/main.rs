@@ -1,9 +1,18 @@
 #![no_std]
+#![no_main]
 
 use core::arch::asm;
 use core::panic::PanicInfo;
 
-// Screen Utilities
+#[unsafe(no_mangle)]
+#[unsafe(link_section = ".startup")]
+fn stage2() -> ! {
+    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
+    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
+    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
+
+    loop {};
+}
 
 pub fn puts(st: &[u8]) {
     for &c in st {
@@ -16,28 +25,12 @@ fn putc(ch: u8) {
         asm!(
             "int 0x10",
             in("ax") ch as u16 | 0x0e00,
+            in("bx") 0x0007 as u16,
             options(nostack)
         );
     }
 }
 
-pub fn cscrn() {
-    unsafe {
-        asm!(
-            "mov dx, 0x184F",
-            "xor cx, cx",
-            "mov bh, 0x07",
-            "mov ax, 0x0700",
-            "int 0x10",
-            "mov ah, 0x02",
-            "xor bh, bh",
-            "xor dx, dx",
-            "int 0x10",
-        );
-    }
-}
-
-// 
 
 #[panic_handler]
 fn panic(_: &PanicInfo) -> ! {
