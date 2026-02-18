@@ -8,8 +8,6 @@ use core::panic::PanicInfo;
 #[unsafe(link_section = ".startup")]
 fn stage2() -> ! {
     puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
-    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
-    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
 
     loop {};
 }
