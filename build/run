@@ -46,4 +46,4 @@ cat bin/stage0.bin bin/stage1.bin > bin/bootloader.bin
 stat bin/bootloader.bin
 
 echo "========== Completed Build and Drive =========="
-qemu-system-i386 -fda bin/bootloader.bin
+qemu-system-i386 bin/bootloader.bin
