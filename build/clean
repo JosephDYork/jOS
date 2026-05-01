@@ -1,8 +1,12 @@
 #!/usr/sbin/fish
 
 # Cleanup binaries
-rm bin/boot.bin
-rm bin/linkerout.bin
-rm -rf target
+rm -f bin/stage0.bin
+rm -f bin/stage0linkerout.bin
+rm -f bin/stage1.bin
+rm -f bin/stage1linkerout.bin
+rm -f bin/bootloader.bin
+rm -rf stage0/target
+rm -rf stage1/target
 
 echo "========== Cleaned old Binaries =========="

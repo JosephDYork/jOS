@@ -2,7 +2,8 @@
 #![no_main]
 
 use core::arch::asm;
-use jos::{DiskAddressPacket, read_sectors, cscrn, puts};
+use core::panic::PanicInfo;
+use jos_shared::{DiskAddressPacket, cscrn, puts, read_sectors};
 
 #[unsafe(no_mangle)]
 #[unsafe(link_section = ".startup")]
@@ -14,6 +15,7 @@ pub unsafe extern "C" fn _start() -> ! {
             "mov es, ax",
             "mov ss, ax",
             "mov sp, 0x7C00",
+            "cli",
             options(nostack, nomem)
         );
 
@@ -30,4 +32,9 @@ fn rust_main() -> ! {
     puts(b"[ Stage0: OK ] Bootsector Loaded at 0x07C00");
     read_sectors(&dap);
     stage2();
+}
+
+#[panic_handler]
+fn panic(_: &PanicInfo) -> ! {
+    loop {}
 }

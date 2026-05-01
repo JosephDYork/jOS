@@ -1,34 +1,33 @@
 #!/usr/sbin/fish
 
 # Cleanup old binaries
-rm bin/stage0.bin
-rm bin/stage0linkerout.bin
-rm bin/stage1.bin
-rm bin/stage1linkerout.bin
+mkdir -p bin
+rm -f bin/stage0.bin
+rm -f bin/stage0linkerout.bin
+rm -f bin/stage1.bin
+rm -f bin/stage1linkerout.bin
 
 # Build the stage0 bootloader
 echo "============= Cargo Stage0 Information =============="
-cd ./stage0
+pushd stage0 > /dev/null
 cargo build --release
+popd > /dev/null
 echo "========== Unlinked Stage0 Elf Information =========="
-stat target/i386-unknown-none/release/jos
+stat stage0/target/i386-unknown-none/release/jos
 echo "========== Linked Stage0 Elf Information =========="
-llvm-objcopy -O binary target/i386-unknown-none/release/jos ../bin/stage0linkerout.bin
-
-cd ..
+llvm-objcopy -O binary stage0/target/i386-unknown-none/release/jos bin/stage0linkerout.bin
 cp bin/stage0linkerout.bin bin/stage0.bin
 stat bin/stage0linkerout.bin
 
 # Build the stage1 bootloader
 echo "============= Cargo Stage1 Information =============="
-cd ./stage1
+pushd stage1 > /dev/null
 cargo build --release
+popd > /dev/null
 echo "========== Unlinked Stage1 Elf Information =========="
-stat target/i386-unknown-none/release/jos
+stat stage1/target/i386-unknown-none/release/jos
 echo "========== Linked Stage1 Elf Information =========="
-llvm-objcopy -O binary target/i386-unknown-none/release/jos ../bin/stage1linkerout.bin
-
-cd ..
+llvm-objcopy -O binary stage1/target/i386-unknown-none/release/jos bin/stage1linkerout.bin
 cp bin/stage1linkerout.bin bin/stage1.bin
 stat bin/stage1linkerout.bin
 
