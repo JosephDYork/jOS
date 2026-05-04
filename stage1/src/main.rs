@@ -2,12 +2,16 @@
 #![no_main]
 
 use core::panic::PanicInfo;
-use jos_shared::puts;
+use jos_shared::{load_gdt, puth, puts};
 
 #[unsafe(no_mangle)]
 #[unsafe(link_section = ".startup")]
 fn stage2() -> ! {
-    puts(b"\r\n[ Stage1: OK ] Second Stage bootloaded at 0x1000");
+    let gdt_ptr = load_gdt();
+
+    puts(b"[ Stage1: OK ] Second Stage bootloaded at 0x1000\r\n");
+    puts(b"[ Stage1: OK ] GDT loaded at 0x");
+    puth(gdt_ptr as usize as u32);
 
     loop {};
 }

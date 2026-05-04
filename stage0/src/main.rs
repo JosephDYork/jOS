@@ -3,7 +3,7 @@
 
 use core::arch::asm;
 use core::panic::PanicInfo;
-use jos_shared::{DiskAddressPacket, cscrn, puts, read_sectors};
+use jos_shared::{DiskAddressPacket, puts, readdsk_ext, cscrn};
 
 #[unsafe(no_mangle)]
 #[unsafe(link_section = ".startup")]
@@ -24,14 +24,14 @@ pub unsafe extern "C" fn _start() -> ! {
 }
 
 fn rust_main() -> ! {
-    let ptr = 0x1000 as *const ();
-    let stage2: fn() -> ! = unsafe { core::mem::transmute(ptr) };
+    let stage1_ptr = 0x1000 as *const ();
+    let stage1: fn() -> ! = unsafe { core::mem::transmute(stage1_ptr) };
     let dap = DiskAddressPacket::new(1, 1, 0x1000, 0x0000);
 
     cscrn();
-    puts(b"[ Stage0: OK ] Bootsector Loaded at 0x07C00");
-    read_sectors(&dap);
-    stage2();
+    puts(b"[ Stage0: OK ] Bootsector stage0 started at 0x07C00\n\r");
+    readdsk_ext(&dap);
+    stage1();
 }
 
 #[panic_handler]

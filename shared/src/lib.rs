@@ -5,7 +5,7 @@ pub mod gdt;
 pub mod screen;
 pub mod text;
 
-pub use disk::{DiskAddressPacket, read_sectors, readdsk};
-pub use gdt::{GdtDescriptor, GdtEntry};
+pub use disk::{DiskAddressPacket, readdsk_ext, readdsk_chs};
+pub use gdt::{GdtDescriptor, GdtEntry, load_gdt};
 pub use screen::cscrn;
-pub use text::puts;
+pub use text::{puth, puts, puti};
