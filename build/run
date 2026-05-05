@@ -6,6 +6,8 @@ rm -f bin/stage0.bin
 rm -f bin/stage0linkerout.bin
 rm -f bin/stage1.bin
 rm -f bin/stage1linkerout.bin
+rm -f bin/stage2.bin
+rm -f bin/stage2linkerout.bin
 
 # Build the stage0 bootloader
 echo "============= Cargo Stage0 Information =============="
@@ -31,17 +33,28 @@ llvm-objcopy -O binary stage1/target/i386-unknown-none/release/jos bin/stage1lin
 cp bin/stage1linkerout.bin bin/stage1.bin
 stat bin/stage1linkerout.bin
 
+# Build the stage2 bootloader
+echo "============= Cargo Stage2 Information =============="
+pushd stage2 > /dev/null
+cargo build --release
+popd > /dev/null
+echo "========== Unlinked Stage2 Elf Information =========="
+stat stage2/target/i386-unknown-none/release/jos-stage2
+echo "========== Linked Stage2 Elf Information =========="
+llvm-objcopy -O binary stage2/target/i386-unknown-none/release/jos-stage2 bin/stage2linkerout.bin
+cp bin/stage2linkerout.bin bin/stage2.bin
+stat bin/stage2linkerout.bin
+
 # Ensure Stage0 is a proper boot sector
 truncate -s 510 bin/stage0.bin
 printf "\x55\xAA" >> bin/stage0.bin
 
-# Ensure Stage1 is 1 sector
-truncate -s 510 bin/stage1.bin
-printf "\x55\xAA" >> bin/stage1.bin
+# Ensure Stage1 is 1 sector long
+truncate -s 512 bin/stage1.bin
 
 echo "========== Final Bootloader Bin Information =========="
-# Join together our two stages
-cat bin/stage0.bin bin/stage1.bin > bin/bootloader.bin
+# Join together our boot stages
+cat bin/stage0.bin bin/stage1.bin bin/stage2.bin > bin/bootloader.bin
 stat bin/bootloader.bin
 
 echo "========== Completed Build and Drive =========="

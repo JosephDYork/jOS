@@ -14,8 +14,8 @@ pub struct GdtDescriptor {
 // D/B=1 for 32-bit segments
 pub const GDT_TABLE: [GdtEntry; 3] = [
     0x0000_0000_0000_0000, // So this is the null entry, it's required
-    0x00CF_9A00_0000_FFFF, //Bootloader text section ring1
-    0x00CF_9200_0000_FFFF, //Bootloader data section ring1
+    0x00CF_9A00_0000_FFFF, // Bootloader text section ring0
+    0x00CF_9200_0000_FFFF, // Bootloader data section ring0
 ];
 
 pub fn load_gdt() -> *const GdtEntry {

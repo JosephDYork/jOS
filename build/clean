@@ -5,8 +5,11 @@ rm -f bin/stage0.bin
 rm -f bin/stage0linkerout.bin
 rm -f bin/stage1.bin
 rm -f bin/stage1linkerout.bin
+rm -f bin/stage2.bin
+rm -f bin/stage2linkerout.bin
 rm -f bin/bootloader.bin
 rm -rf stage0/target
 rm -rf stage1/target
+rm -rf stage2/target
 
 echo "========== Cleaned old Binaries =========="
