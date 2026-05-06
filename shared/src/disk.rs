@@ -56,11 +56,3 @@ pub fn readdsk_ext(dap: &DiskAddressPacket) {
         );
     }
 }
-
-pub fn readdsk(addr: *const ()) {
-    readdsk_chs(addr);
-}
-
-pub fn read_sectors(dap: &DiskAddressPacket) {
-    readdsk_ext(dap);
-}

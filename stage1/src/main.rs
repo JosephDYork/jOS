@@ -12,7 +12,6 @@ fn stage1() -> ! {
     let dap = DiskAddressPacket::new(2, 1, 0x2000, 0x0000);
     let gdt_ptr = load_gdt();
 
-    puts(b"[ Stage1: OK ] Second Stage bootloaded at 0x1000\r\n");
     readdsk_ext(&dap);
     puts(b"[ Stage1: OK ] Stage2 loaded at 0x");
     puth(stage2_ptr as usize as u32);

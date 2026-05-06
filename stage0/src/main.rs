@@ -10,12 +10,16 @@ use jos_shared::{DiskAddressPacket, puts, readdsk_ext, cscrn};
 pub unsafe extern "C" fn _start() -> ! {
     unsafe {
         asm!(
-            "mov ax, cs",
+            "cli",
+            "xor ax, ax",
             "mov ds, ax",
             "mov es, ax",
             "mov ss, ax",
-            "mov sp, 0x7C00",
-            "cli",
+            "mov fs, ax",
+            "mov gs, ax",
+            "cld",
+            "mov sp, 0x7c00",
+            "sub sp, 0x0200",
             options(nostack, nomem)
         );
 
@@ -35,6 +39,6 @@ fn rust_main() -> ! {
 }
 
 #[panic_handler]
-fn panic(_: &PanicInfo) -> ! {
+fn panic(_info: &PanicInfo) -> ! {
     loop {}
 }
